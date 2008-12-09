@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name     = "contacts"
   s.version  = "0.1.0"
-  s.date     = "2008-12-8"
+  s.date     = Time.now
   s.summary  = "Online contact APIs library"
   s.email    = "mislav.marohnic@gmail.com"
   s.homepage = "http://github.com/mislav/contacts"
