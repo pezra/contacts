@@ -215,19 +215,16 @@ module Contacts
       contacts = []
 
       people['contacts'].each do |contact|
-        name = nil
-        email = nil
+        a_contact = Contact.new
         contact['fields'].each do |field|
           case field['type']
           when 'email'
-            email = field['data']
-            email.strip!
+            a_contact.emails << field['data'].strip
           when 'name'
-            name = "#{field['first']} #{field['last']}"
-            name.strip!
+            a_contact.name = "#{field['first']} #{field['last']}".strip
           end
         end
-        contacts.push([name, email])
+        contacts << a_contact
       end
       return contacts
     end
