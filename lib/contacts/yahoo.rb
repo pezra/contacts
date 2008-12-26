@@ -5,8 +5,18 @@ require 'hpricot'
 require 'md5'
 require 'net/https'
 require 'uri'
-require 'json'
 require 'yaml'
+
+unless defined? ActiveSupport
+  require 'json'
+end
+# We have a JSON parser we can use.
+# 
+# This check is needed because the `json` gem is incompatible with
+# ActiveSupport's JSON implementation.  We will use ActiveSupport's
+# JSON implementation if it is available, otherwise we load the `json`
+# gem.
+
 
 module Contacts
   # = How I can fetch Yahoo Contacts?
@@ -211,7 +221,11 @@ module Contacts
     # * json <String>:: A String the user's contacts ni JSON format
     #
     def self.parse_contacts(json)
-      people = JSON.parse(json)
+      people = if defined? ActiveSupport
+                 ActiveSupport::JSON.decode(json)
+               else
+                 JSON.parse(json)
+               end
       contacts = []
 
       people['contacts'].each do |contact|
