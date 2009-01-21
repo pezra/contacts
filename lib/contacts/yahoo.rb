@@ -102,29 +102,19 @@ module Contacts
       return AUTH_DOMAIN + "#{path}&sig=#{signature}"
     end
 
-    # This method return the user's contacts inside an Array in the following
-    # format:
-    #
-    #   [ 
-    #     ['Brad Fitzgerald', 'fubar@gmail.com'],
-    #     [nil, 'nagios@hotmail.com'],
-    #     ['William Paginate', 'will.paginate@yahoo.com']  ...
-    #   ]
+    # This method return the user's contacts, as Contact objects,
+    # inside an Array.
     #
     # ==== Paramaters
     # * path <String>:: The path of the redirect request that Yahoo sent to you
     # after authenticating the user
     #
     def contacts(path)
-      begin
-        validate_signature(path)
-        credentials = access_user_credentials()
-        parse_credentials(credentials)
-        contacts_json = access_address_book_api()
-        Yahoo.parse_contacts(contacts_json)
-      rescue Exception => e
-        "Error #{e.class}: #{e.message}."
-      end
+      validate_signature(path)
+      credentials = access_user_credentials()
+      parse_credentials(credentials)
+      contacts_json = access_address_book_api()
+      Yahoo.parse_contacts(contacts_json)
     end
 
     # This method processes and validates the redirect request that Yahoo send to
