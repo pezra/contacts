@@ -184,15 +184,28 @@ module Contacts
     #
     def parse_credentials(xml)
       doc = Hpricot::XML(xml)
-      raise YahooAuthenticationFailed, "Yahoo authentication failed.  (#{xml})" unless doc.at('/BBAuthTokenLoginResponse/Success')
-      # We have a successful auth response
+      if doc.at('/BBAuthTokenLoginResponse/Success')
+        # We have a successful auth response
+        @wssid = doc.at('/BBAuthTokenLoginResponse/Success/WSSID').inner_text.strip
+        @cookie = doc.at('/BBAuthTokenLoginResponse/Success/Cookie').inner_text.strip
 
-      @wssid = doc.at('/BBAuthTokenLoginResponse/Success/WSSID').inner_text.strip
-      @cookie = doc.at('/BBAuthTokenLoginResponse/Success/Cookie').inner_text.strip
-
-    rescue Exception => e
-      raise YahooAuthenticationFailed, "Yahoo authentication failed because #{e.message}. (#{xml})"
+      else
+        raise YahooAuthenticationFailed, "Yahoo authentication failed because #{auth_error_desc(doc)}.  (code #{auth_error_code(doc)})"
+      end
     end
+
+    def auth_error_desc(doc)
+      doc.at('/wspwtoken_login_response/Error/ErrorDescription').inner_test.strip
+    rescue
+      nil
+    end
+
+    def auth_error_code(doc)
+      doc.at('/wspwtoken_login_response/Error/ErrorCode').inner_test.strip
+    rescue
+      nil
+    end
+
 
     # This method accesses the Yahoo Address Book API and retrieves the user's
     # contacts in JSON.

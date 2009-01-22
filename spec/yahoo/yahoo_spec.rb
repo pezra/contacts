@@ -58,10 +58,12 @@ describe Contacts::Yahoo do
     lambda{
       @yahoo.parse_credentials(<<-FAIL_CREDS)
       <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-      <BBAuthTokenLoginResponse 
-         xmlns:wsse='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'
-         xmlns:yahooauth='urn:yahoo:auth'>   
-      </BBAuthTokenLoginResponse>
+      <wspwtoken_login_response>
+        <Error>
+          <ErrorCode>2001<ErrorCode>
+          <ErrorDescription>The token is invalid</ErrorDescription>
+        </Error>
+      </wspwtoken_login_response>
       FAIL_CREDS
     }.should raise_error(Contacts::YahooAuthenticationFailed)
   end 
