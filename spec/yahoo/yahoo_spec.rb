@@ -54,6 +54,18 @@ describe Contacts::Yahoo do
     @yahoo.cookie.should == 'Y=cdunlEx76ZEeIdWyeJNOegxfy.jkeoULJCnc7Q0Vr8D5P.u.EE2vCa7G2MwBoULuZhvDZuJNqhHwF3v5RJ4dnsWsEDGOjYV1k6snoln3RlQmx0Ggxs0zAYgbaA4BFQk5ieAkpipq19l6GoD_k8IqXRfJN0Q54BbekC_O6Tj3zl2wV3YQK6Mi2MWBQFSBsO26Tw_1yMAF8saflF9EX1fQl4N.1yBr8UXb6LLDiPQmlISq1_c6S6rFbaOhSZMgO78f2iqZmUAk9RmCHrqPJiHEo.mJlxxHaQsuqTMf7rwLEHqK__Gi_bLypGtaslqeWyS0h2J.B5xwRC8snfEs3ct_kLXT3ngP_pK3MeMf2pe1TiJ4JXVciY9br.KJFUgNd4J6rmQsSFj4wPLoMGCETfVc.M8KLiaFHasZqXDyCE7tvd1khAjQ_xLfQKlg1GlBOWmbimQ1FhdHnsVj3svXjEGquRh8JI2sHIQrzoiqAPBf9WFKQcH0t_1dxf4MOH.7gJaYDPEozCW5EcCsYjuHup9xJKxyTddh5pk8yUg5bURzA.TwPalExMKsbv.RWFBhzWKuTp5guNcqjmUHcCoT19_qFENHX41Xf3texAnsDDGj'
   end
 
+  it "should raise exception if creds not successful" do
+    lambda{
+      @yahoo.parse_credentials(<<-FAIL_CREDS)
+      <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+      <BBAuthTokenLoginResponse 
+         xmlns:wsse='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'
+         xmlns:yahooauth='urn:yahoo:auth'>   
+      </BBAuthTokenLoginResponse>
+      FAIL_CREDS
+    }.should raise_error(Contacts::YahooAuthenticationFailed)
+  end 
+
   it 'should parse the contacts json response' do
     json = read_file('yh_contacts.txt')
     

@@ -19,6 +19,9 @@ end
 
 
 module Contacts
+  class YahooAuthenticationFailed < Exception
+  end
+
   # = How I can fetch Yahoo Contacts?
   # To gain access to a Yahoo user's data in the Yahoo Address Book Service, 
   # a third-party developer first must ask the owner for permission. You must
@@ -181,8 +184,14 @@ module Contacts
     #
     def parse_credentials(xml)
       doc = Hpricot::XML(xml)
+      raise YahooAuthenticationFailed, "Yahoo authentication failed.  (#{xml})" unless doc.at('/BBAuthTokenLoginResponse/Success')
+      # We have a successful auth response
+
       @wssid = doc.at('/BBAuthTokenLoginResponse/Success/WSSID').inner_text.strip
       @cookie = doc.at('/BBAuthTokenLoginResponse/Success/Cookie').inner_text.strip
+
+    rescue Exception => e
+      raise YahooAuthenticationFailed, "Yahoo authentication failed because #{e.message}. (#{xml})"
     end
 
     # This method accesses the Yahoo Address Book API and retrieves the user's
