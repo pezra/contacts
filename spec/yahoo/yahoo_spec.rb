@@ -60,12 +60,13 @@ describe Contacts::Yahoo do
       <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
       <wspwtoken_login_response>
         <Error>
-          <ErrorCode>2001<ErrorCode>
+          <ErrorCode>2001</ErrorCode>
           <ErrorDescription>The token is invalid</ErrorDescription>
         </Error>
       </wspwtoken_login_response>
       FAIL_CREDS
-    }.should raise_error(Contacts::YahooAuthenticationFailed)
+    }.should raise_error(Contacts::YahooAuthenticationFailed, 
+                         "Yahoo authentication failed because: The token is invalid (code 2001)")
   end 
 
   it 'should parse the contacts json response' do

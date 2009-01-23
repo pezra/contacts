@@ -190,18 +190,18 @@ module Contacts
         @cookie = doc.at('/BBAuthTokenLoginResponse/Success/Cookie').inner_text.strip
 
       else
-        raise YahooAuthenticationFailed, "Yahoo authentication failed because #{auth_error_desc(doc)}.  (code #{auth_error_code(doc)})"
+        raise YahooAuthenticationFailed, "Yahoo authentication failed because: #{auth_error_desc(doc)} (code #{auth_error_code(doc)})"
       end
     end
 
     def auth_error_desc(doc)
-      doc.at('/wspwtoken_login_response/Error/ErrorDescription').inner_test.strip
+      doc.at('/wspwtoken_login_response/Error/ErrorDescription').inner_text.strip
     rescue
       nil
     end
 
     def auth_error_code(doc)
-      doc.at('/wspwtoken_login_response/Error/ErrorCode').inner_test.strip
+      doc.at('/wspwtoken_login_response/Error/ErrorCode').inner_text.strip
     rescue
       nil
     end
